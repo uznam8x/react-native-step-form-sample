@@ -63,6 +63,7 @@ function RegisterScreen({
     canPrev && {
       onPrev: () => {
         service.send('PREVIOUS');
+        navigation.goBack();
       },
     },
     canNext && {onNext: handleSubmit},
@@ -89,27 +90,8 @@ export default function RegisterForm({
 
   const handleClose = () => {
     service.send('CLOSE');
+    navigation.navigate('Login');
   };
-
-  const init = () => {
-    const subscription = state$
-      .pipe(
-        skip(1),
-        filter($ => $.value === route.name),
-      )
-      .subscribe($ => {
-        if ($.event.type === 'CLOSE') {
-          navigation.navigate('Login');
-        }
-        if ($.event.type === 'PREVIOUS') {
-          navigation.goBack();
-        }
-      });
-    return () => {
-      subscription.unsubscribe();
-    };
-  };
-  useEffect(init, []);
 
   const index = STEP.findIndex(v => v.key === route.name);
   const canPrev = index > 0;
